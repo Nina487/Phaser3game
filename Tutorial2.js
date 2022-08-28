@@ -1,4 +1,5 @@
 import Dog from "./Dog.js";
+import GameLogic from "./GameLogic.js";
 export default class Tutorial2 extends Phaser.Scene {
     constructor() {
         super("Tutorial2");
@@ -13,7 +14,8 @@ export default class Tutorial2 extends Phaser.Scene {
             font: '600 50px Papyrus',
             wordWrap: { width: screenWidth - 20  }
         }).setOrigin(0.5, -0.2);
-        this.add.existing(new Dog(this, 300, 400, 'MainScene', true));
-        this.add.existing(new Dog(this, 700, 500, 'MainScene', true));
+        var gameLogic = new GameLogic(this, 'MainScene', true);
+        gameLogic.addAnimal(new Dog(this, 300, 400, gameLogic));
+        gameLogic.addAnimal(new Dog(this, 700, 500, gameLogic));
     }
 }

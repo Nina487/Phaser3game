@@ -1,4 +1,5 @@
 import Dog from "./Dog.js";
+import GameLogic from "./GameLogic.js";
 class Maploader {
     
     constructor (scene, map, nextScene)
@@ -9,10 +10,12 @@ class Maploader {
         this.drawGrid(rows, columns);
         var cellWidth = this.scene.cameras.main.width/columns;
         var cellHeight = this.scene.cameras.main.height/rows;
+        var gameLogic = new GameLogic(scene, nextScene);
         for (var i = 0; i < rows; i++) {
             for (var j = 0; j < columns; j++) {
                 if (map[i][j] === 1) {
-                    scene.add.existing(new Dog(scene, cellWidth*j + cellWidth/2, cellHeight*i + cellHeight/2, nextScene));
+                    var dog = new Dog(scene, cellWidth*j + cellWidth/2, cellHeight*i + cellHeight/2, gameLogic);
+                    gameLogic.addAnimal(dog);
                 }
             }
         }
