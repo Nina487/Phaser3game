@@ -141,7 +141,7 @@ class GameLogic {
                     }
                 }
             } else {
-                this.showCantBeSoulmates(dog);
+                this.showCantBeSoulmates();
                 var gameLogic = this;
                 setTimeout(function() {
                     dog.clearTint();
