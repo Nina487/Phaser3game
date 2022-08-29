@@ -20,7 +20,7 @@ class GameLogic {
         this.scene = scene;
         this.nextScene = nextScene;
         this.endAfter2Clicks = endAfter2Clicks;
-        this.selected = [];
+        this.selected = null;
     }
 
     addAnimal(dog) {
@@ -60,9 +60,8 @@ class GameLogic {
     endSecondTutorial() {
         this.text.text = "These can't\nbe soulmates :'(";
         this.text.depth = 2;
-        var gameLogic = this;
-        setTimeout(function(){
-            gameLogic.scene.scene.start(gameLogic.nextScene);
+        setTimeout(() => {
+            this.scene.scene.start(this.nextScene);
         }, 1000);
     }
 
@@ -72,41 +71,38 @@ class GameLogic {
         a2.disableInteractive();
         this.animals.splice(this.animals.indexOf(a1), 1);
         this.animals.splice(this.animals.indexOf(a2), 1);
-        var gameLogic = this;
-        setTimeout(function() {
+        setTimeout(() => {
             a1.destroy();
             a2.destroy();
-            gameLogic.selected.splice(0,2);
+            this.selected = null;
             line.destroy();
         }, 500);
     }
 
     endLevelWin() {
-        var gameLogic = this;
         this.text2.depth = 2;
-        if (this.nextScene) {
-            this.text2.text = "Good job!";
-            setTimeout(function() {
-                gameLogic.scene.scene.start(gameLogic.nextScene);
+        if (!this.nextScene) {
+            setTimeout(() => {
+                this.text2.text = "Thank you\nfor playing!";
             }, 1000);
-        } else {
-            setTimeout(function() {
-                gameLogic.text2.text = "Thank you\nfor playing!";
-            }, 1000);
+            return;
         }
+        this.text2.text = "Good job!";
+       setTimeout(() => {
+           this.scene.scene.start(this.nextScene);
+       }, 1000);
     }
 
     endLevelLoss() {
-        var gameLogic = this;
         this.text2.depth = 2;
-        setTimeout(function() {
-            gameLogic.text2.text = "You lost!\n";
-            var button = gameLogic.scene.add.text(gameLogic.scene.cameras.main.centerX, gameLogic.scene.cameras.main.centerY + 100, 'Restart', { fill: '#ff0000', font: '600 50px Papyrus' })
+        setTimeout(() => {
+            this.text2.text = "You lost!\n";
+            var button = this.scene.add.text(this.scene.cameras.main.centerX, this.scene.cameras.main.centerY + 100, 'Restart', { fill: '#ff0000', font: '600 50px Papyrus' })
             .setOrigin(0.5)
             .setPadding(10)
             .setStyle({ backgroundColor: '#111' })
             .setInteractive({ useHandCursor: true })
-            .on('pointerdown', gameLogic.restartGame);
+            .on('pointerdown', this.restartGame);
         }, 500);
         for (var k = 0; k < this.animals.length; k++) {
             this.animals[k].disableInteractive();
@@ -116,20 +112,19 @@ class GameLogic {
     showCantBeSoulmates() {
         this.text.text = "These can't\nbe soulmates :'(";
         this.text.depth = 2;
-        var gameLogic = this;
-        setTimeout(function(){
-            gameLogic.text.text = "";
+        setTimeout(() => {
+            this.text.text = "";
         }, 1000);
     }
 
     processClick(dog) {
-        if (this.endAfter2Clicks && this.selected.length === 1) {
+        if (this.endAfter2Clicks && this.selected) {
             this.endSecondTutorial();
             return;
         }
-        if (this.selected.length >= 1 && this.selected.length % 2 === 1) {
-            if (this.areSoulmates(dog, this.selected[this.selected.length - 1])) {
-                this.makeAPair(dog, this.selected[this.selected.length - 1]);
+        if (this.selected) {
+            if (this.areSoulmates(dog, this.selected)) {
+                this.makeAPair(dog, this.selected);
                 if (this.animals.length === 0) {
                    this.endLevelWin();
                    return;
@@ -142,15 +137,14 @@ class GameLogic {
                 }
             } else {
                 this.showCantBeSoulmates();
-                var gameLogic = this;
-                setTimeout(function() {
+                setTimeout(() => {
                     dog.clearTint();
-                    gameLogic.selected[0].clearTint();
-                    gameLogic.selected.splice(0,2);
+                    this.selected.clearTint();
+                    this.selected = null;
                 }, 500);
             }
         } 
-        this.selected.push(dog);
+        this.selected = dog;
     }
    
 }
