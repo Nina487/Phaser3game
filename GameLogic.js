@@ -122,29 +122,30 @@ class GameLogic {
             this.endSecondTutorial();
             return;
         }
-        if (this.selected) {
-            if (this.areSoulmates(dog, this.selected)) {
-                this.makeAPair(dog, this.selected);
-                if (this.animals.length === 0) {
-                   this.endLevelWin();
-                   return;
-                }
-                else {
-                    if (this.isGameLost(this.animals)) {
-                       this.endLevelLoss();
-                       return;
-                    }
-                }
-            } else {
-                this.showCantBeSoulmates();
-                setTimeout(() => {
-                    dog.clearTint();
-                    this.selected.clearTint();
-                    this.selected = null;
-                }, 500);
+        if (!this.selected) {
+            selected = dog;
+            return;
+        }
+        if (!this.areSoulmates(dog, this.selected)) {
+            this.showCantBeSoulmates();
+            setTimeout(() => {
+                dog.clearTint();
+                this.selected.clearTint();
+                this.selected = null;
+            }, 500);
+            return;
+        }
+        this.makeAPair(dog, this.selected);
+        if (this.animals.length === 0) {
+            this.endLevelWin();
+            return;
+        }
+        else {
+            if (this.isGameLost(this.animals)) {
+               this.endLevelLoss();
+               return;
             }
         } 
-        this.selected = dog;
     }
    
 }
